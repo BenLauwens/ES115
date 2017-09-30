@@ -1,0 +1,73 @@
+# How to build and configure the appliance
+
+- Create a new VirtualBox appliance:
+    - Hard disk of 20M
+    - [FreeBSD 11.1 i386 install iso](https://download.freebsd.org/ftp/releases/i386/i386/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-i386-bootonly.iso)
+    - NAT networking with port forwarding 2222->22 and 8888->8888
+    - Boot and install FreeBSD:
+        - Disk UFS auto format
+        - Install `base`, `src`
+        - Interface `em0` DHCP
+        - Start SSH
+        - Apply hardening
+        - Create admin user and jupyter user
+- Reboot appliance and login as root:
+    - `freebsd-update fetch`
+    - `freebsd-update install`
+    - `portsnap fetch`
+    - `portsnap extract`
+    - `cd /usr/ports/ports-mgmt/portmaster`
+    - `make install clean`
+    - install with portmaster:
+        - devel/git
+        - textproc/hs-pandoc
+        - editors/nano
+        - math/octave-forge-interval
+        - math/octave-forge-statistics
+        - math/octave-forge-symbolic
+        - ports-mgmt/pkg
+        - ports-mgmt/pkg_cutleaves
+        - ports-mgmt/portmaster
+        - www/py-notebook
+        - devel/py-pip
+        - graphics/rubygem-pdfkit
+        - security/sudo
+        - graphics/svg2pdf
+        - print/texlive-full
+        - emulators/virtualbox-ose-additions-nox11
+        - shells/zsh
+    - clean with `pkg_cutleave`
+    - configure SSH:
+        - copy public key to .ssh/authorized_keys (admin and jupyter user)
+        - put `AuthenticationMethods publickey` in `/etc/ssh/sshd_config`
+    - configure sudo:
+        - uncomment `%wheel ALL=(ALL) NOPASSWD: ALL` in `/usr/local/etc/sudoers`
+- Reboot *head-less* and login as admin user via SSH port 2222:
+    - `ps lock root`
+    - `sudo chpass jupyter` and put an `*` in the passwd field
+    - `sudo chsh jupyter /usr/local/bin/zsh`
+    - `sudo chpass admin` and put an `*` in the passwd field
+    - `sudo chsh admin /usr/local/bin/zsh`
+    - `sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"`
+    - nano .zshrc:
+        - `ZSH_THEME="avit"`
+        - `export EDITOR="nano"`
+- Login as jupyter user via SSH port 2222:
+    - `sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"`
+    - nano .zs
+        - `ZSH_THEME="avit"`
+        - `DISABLE_AUTO_UPDATE="true"`
+        - `export EDITOR="nano"`
+    - `pip install octave_kernel --user`
+    - `python -m octave_kernel install --user`
+    - `pip install RISE --user`
+    - `jupyter-nbextension install rise --py --user`
+    - `jupyter-nbextension enable rise --py --user`
+    - `pip install hide_code --user`
+    - `jupyter-nbextension install hide_code --py --user`
+    - `jupyter-nbextension enable hide_code --py --user`
+    - `jupyter-serverextension enable hide_code --py --user`
+    - `crontab -e`:
+        - `SHELL=/usr/local/bin/zsh`
+        - `@reboot /usr/local/bin/jupyter-notebook`
+- Reboot *head-less* 
