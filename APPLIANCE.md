@@ -21,6 +21,8 @@
     - install with portmaster:
         - devel/git
         - textproc/hs-pandoc
+        - graphics/inkscape
+        - devel/llvm40
         - editors/nano
         - math/octave-forge-interval
         - math/octave-forge-statistics
@@ -35,6 +37,7 @@
         - graphics/svg2pdf
         - print/texlive-full
         - emulators/virtualbox-ose-additions-nox11
+        - x11-fonts/webfonts
         - shells/zsh
     - clean with `pkg_cutleave`
     - configure SSH:
@@ -50,7 +53,7 @@
     - `sudo chsh admin /usr/local/bin/zsh`
     - `sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"`
     - nano .zshrc:
-        - `ZSH_THEME="avit"`
+        - `ZSH_THEME="ys"`
         - `export EDITOR="nano"`
 - Login as jupyter user via SSH port 2222:
     - `sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"`
