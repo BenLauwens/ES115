@@ -1,3 +1,3 @@
 # ES115
 
-Introduction to MATLAB (Octave) for engineers
+Introduction to MATLAB for engineers
